@@ -1,0 +1,29 @@
+{
+  "name": "node-datastax-graph-gremlin",
+  "version": "0.0.0",
+  "description": "Example node web server that communicates with a DSE Graph database via gremlin",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quinnnned/node-datastax-graph-gremlin.git"
+  },
+  "author": "Quinn Edwards <quinnnned@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quinnnned/node-datastax-graph-gremlin/issues"
+  },
+  "homepage": "https://github.com/quinnnned/node-datastax-graph-gremlin#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "reload": "^1.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
