@@ -1,11 +1,12 @@
 const secrets = require('../secrets.json');
+const dse = require('dse-driver');
+
 var express = require('express')
 var http = require('http')
 var path = require('path')
 var reload = require('reload')
 var bodyParser = require('body-parser')
 var logger = require('morgan')
-require('isomorphic-fetch');
  
 var app = express()
  
@@ -26,21 +27,33 @@ reload(server, app)
 server.listen(app.get('port'), function() {
     console.log("Web server listening on port " + app.get('port'));
 
-    const {ip, port, name, auth} = secrets.db;
-    fetch(`http://${ip}:${port}/command/${name}/gremlin`, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: { 
-            'Authorization': `Basic ${auth}`, 
-        },
-        body: JSON.stringify({
-            command: "g.V().has(prop1)",
-            parameters: {
-                prop1: 'bar'
-            }
-        })
-    }).then( (response) => response.text().then( x => {
+    const {ip, username, password, name } = secrets.dse;
 
-        console.log(JSON.stringify(JSON.parse(x), null, 4))
-    })).catch( error => console.error(error));
+    const client = new dse.Client({
+        contactPoints: [ip],
+        graphOptions: { name },
+        authProvider: new dse.auth.DsePlainTextAuthProvider(username, password)
+    });
+
+    client.executeGraph('g.V()', (err, results) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+
+        results.forEach( vertex => {
+            console.log(vertex);
+        })
+    });
 });
+
+/*
+results object properties and methods
+[ [ 'object', 'info' ],
+  [ 'number', 'length' ],
+  [ 'object', 'pageState' ],
+  [ 'function', 'first' ],
+  [ 'function', 'forEach' ],
+  [ 'function', 'toArray' ],
+  [ 'function', 'values' ] ]
+ */
